@@ -9,29 +9,26 @@ export class OwnersService {
     return await this.ownerModel.create(createOwnerDto);
   }
 
-  addPet(id: string, catId: string) {
-    const objectId = new mongoose.Types.ObjectId(catId);
-    console.log({ id, objectId });
-
-    return this.ownerModel.findByIdAndUpdate(
-      id,
-      { $addToSet: { cats: catId } },
-      { new: true },
-    );
-  }
   async findAll(): Promise<Owner[]> {
-    return this.ownerModel.find().populate('cats').exec();
+    return await this.ownerModel.find();
   }
 
-  async findById(id: string): Promise<Owner> {
-    return this.ownerModel.findById(id);
+  async findById(id: string): Promise<Owner[]> {
+    const objectId = new mongoose.Types.ObjectId(id);
 
-    //     return this.ownerModel.aggregate().lookup({
-    //       from: 'cats',
-    //       localField: 'ownerId',
-    //       foreignField: '_id',
-    //       as: 'cats',
-    //     });
-    //   }
+    return this.ownerModel
+      .aggregate()
+      .match({ _id: { $eq: objectId } })
+      .lookup({
+        from: 'cats',
+        localField: '_id',
+        foreignField: 'owner',
+        as: 'cats',
+      });
+  }
+
+  async deleteById(id: string): Promise<any> {
+    return await this.ownerModel.deleteOne({ _id: id }).exec();
+    // return this.catModel.deleteOne().where('_id').equals(id).exec();
   }
 }

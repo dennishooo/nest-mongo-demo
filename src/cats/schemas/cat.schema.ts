@@ -1,18 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Type } from 'class-transformer';
 import * as mongoose from 'mongoose';
 import { Owner } from 'src/owners/schema/owner.schema';
-// import { Owner } from 'src/owners/interface/owner.interface';
-
-// export const CatSchema = new mongoose.Schema({
-//   name: String,
-//   age: Number,
-//   breed: String,
-//   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'Owner' },
-// });
 
 export type CatDocument = Cat & mongoose.Document;
-@Schema({ timestamps: true })
+@Schema({
+  timestamps: true,
+  // ,_id: false
+})
 export class Cat {
+  // @Prop({ type: mongoose.Schema.Types.ObjectId })
+  // _id: mongoose.Schema.Types.ObjectId;
+
   @Prop({ required: true })
   name: string;
   @Prop()
@@ -20,8 +19,9 @@ export class Cat {
   @Prop()
   breed: string;
 
-  // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Owner' })
-  // owner: Owner;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Owner' })
+  @Type(() => Owner)
+  owner: Owner;
 }
 
 export const CatSchema = SchemaFactory.createForClass(Cat);
