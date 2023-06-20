@@ -20,6 +20,18 @@ export class CatsService {
     return this.catModel.find().exec();
   }
 
+  async countOldPet(age: number): Promise<Cat[]> {
+    // return await this.catModel.aggregate([
+    //   { $match: { age: { $gt: age } } },
+    //   { $group: { _id: '$age', count: { $sum: 1 } } },
+    // ]);
+
+    return await this.catModel
+      .aggregate()
+      .match({ age: { $gt: age } })
+      .group({ _id: '$age', count: { $sum: 1 } });
+  }
+
   async deleteById(id: string): Promise<any> {
     return this.catModel.deleteOne({ _id: id }).exec();
     // return this.catModel.deleteOne().where('_id').equals(id).exec();

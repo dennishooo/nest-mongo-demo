@@ -5,6 +5,7 @@ import {
   Get,
   Injectable,
   Param,
+  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common';
@@ -26,6 +27,11 @@ export class CatsController {
   @Get()
   async findAll(): Promise<Cat[]> {
     return await this.catsService.findAll();
+  }
+
+  @Get('count')
+  async findOldPets(@Query('age', ParseIntPipe) age: number): Promise<Cat[]> {
+    return await this.catsService.countOldPet(age);
   }
 
   @Delete(':id')
