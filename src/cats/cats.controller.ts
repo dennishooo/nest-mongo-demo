@@ -10,8 +10,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { CreateCatDto } from './dto/create-cat.dto';
-import { Cat } from './interfaces/cat.interface';
 import { CatsService } from './cats.service';
+import { Cat } from './schemas/cat.schema';
 
 @Controller('cats')
 @Injectable()
@@ -27,6 +27,11 @@ export class CatsController {
   @Get()
   async findAll(): Promise<Cat[]> {
     return await this.catsService.findAll();
+  }
+
+  @Get(':id')
+  async findById(@Param('id') id: string): Promise<Cat[]> {
+    return await this.catsService.findById(id);
   }
 
   @Get('count')
